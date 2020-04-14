@@ -17,7 +17,7 @@
 */
 export function blind(message: Uint8Array, seed: Uint8Array): BlindedMessage;
 /**
-* Given a blinded message and a pointer to the blinding_factor used for blinding, it returns the message
+* Given a blinded message and a blinding_factor used for blinding, it returns the message
 * unblinded
 *
 * * blinded_message: A message which has been blinded or a blind signature
@@ -26,15 +26,11 @@ export function blind(message: Uint8Array, seed: Uint8Array): BlindedMessage;
 * # Throws
 *
 * - If unblinding fails.
-*
-* # Safety
-*
-* - The `blinding_factor` is a pointer. If an invalid pointer value is given, this will panic.
 * @param {Uint8Array} blinded_signature 
-* @param {number} blinding_factor 
+* @param {Uint8Array} blinding_factor_buf 
 * @returns {Uint8Array} 
 */
-export function unblind(blinded_signature: Uint8Array, blinding_factor: number): Uint8Array;
+export function unblind(blinded_signature: Uint8Array, blinding_factor_buf: Uint8Array): Uint8Array;
 /**
 * Verifies the signature after it has been unblinded. Users will call this on the
 * threshold signature against the full public key
@@ -46,30 +42,22 @@ export function unblind(blinded_signature: Uint8Array, blinding_factor: number):
 * # Throws
 *
 * - If verification fails
-*
-* # Safety
-*
-* - The `public_key` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} public_key 
+* @param {Uint8Array} public_key_buf 
 * @param {Uint8Array} message 
 * @param {Uint8Array} signature 
 */
-export function verify(public_key: number, message: Uint8Array, signature: Uint8Array): void;
+export function verify(public_key_buf: Uint8Array, message: Uint8Array, signature: Uint8Array): void;
 /**
 * Signs the message with the provided private key and returns the signature
 *
 * # Throws
 *
 * - If signing fails
-*
-* # Safety
-*
-* - The `private_key` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} private_key 
+* @param {Uint8Array} private_key_buf 
 * @param {Uint8Array} message 
 * @returns {Uint8Array} 
 */
-export function sign(private_key: number, message: Uint8Array): Uint8Array;
+export function sign(private_key_buf: Uint8Array, message: Uint8Array): Uint8Array;
 /**
 * Signs the message with the provided **share** of the private key and returns the **partial**
 * signature.
@@ -80,14 +68,11 @@ export function sign(private_key: number, message: Uint8Array): Uint8Array;
 *
 * NOTE: This method must NOT be called with a PrivateKey which is not generated via a
 * secret sharing scheme.
-*
-* # Safety
-* - The `private_key` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} share 
+* @param {Uint8Array} share_buf 
 * @param {Uint8Array} message 
 * @returns {Uint8Array} 
 */
-export function partialSign(share: number, message: Uint8Array): Uint8Array;
+export function partialSign(share_buf: Uint8Array, message: Uint8Array): Uint8Array;
 /**
 * Verifies a partial signature against the public key corresponding to the secret shared
 * polynomial.
@@ -95,14 +80,11 @@ export function partialSign(share: number, message: Uint8Array): Uint8Array;
 * # Throws
 *
 * - If verification fails
-*
-* # Safety
-* - The `polynomial` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} polynomial 
+* @param {Uint8Array} polynomial_buf 
 * @param {Uint8Array} blinded_message 
 * @param {Uint8Array} sig 
 */
-export function partialVerify(polynomial: number, blinded_message: Uint8Array, sig: Uint8Array): void;
+export function partialVerify(polynomial_buf: Uint8Array, blinded_message: Uint8Array, sig: Uint8Array): void;
 /**
 * Combines a flattened vector of partial signatures to a single threshold signature
 *
@@ -159,28 +141,27 @@ export function thresholdKeygen(n: number, t: number, seed: Uint8Array): Keys;
 export function keygen(seed: Uint8Array): Keypair;
 export class BlindedMessage {
   free(): void;
-  readonly blindingFactorPtr: number;
+  readonly blindingFactor: Uint8Array;
   readonly message: Uint8Array;
 }
 export class Keypair {
   free(): void;
-  readonly privateKeyPtr: number;
-  readonly publicKeyPtr: number;
+  readonly privateKey: Uint8Array;
+  readonly publicKey: Uint8Array;
 }
 export class Keys {
   free(): void;
 /**
 * @param {number} index 
-* @returns {number} 
+* @returns {Uint8Array} 
 */
-  getSharePtr(index: number): number;
+  getShare(index: number): Uint8Array;
 /**
 * @returns {number} 
 */
   numShares(): number;
   n: number;
-  readonly polynomialPtr: number;
-  readonly sharesPtr: number;
+  readonly polynomial: Uint8Array;
   t: number;
-  readonly thresholdPublicKeyPtr: number;
+  readonly thresholdPublicKey: Uint8Array;
 }

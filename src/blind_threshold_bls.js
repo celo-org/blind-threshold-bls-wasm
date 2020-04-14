@@ -92,7 +92,7 @@ function getArrayU8FromWasm0(ptr, len) {
     return getUint8Memory0().subarray(ptr / 1, ptr / 1 + len);
 }
 /**
-* Given a blinded message and a pointer to the blinding_factor used for blinding, it returns the message
+* Given a blinded message and a blinding_factor used for blinding, it returns the message
 * unblinded
 *
 * * blinded_message: A message which has been blinded or a blind signature
@@ -101,23 +101,21 @@ function getArrayU8FromWasm0(ptr, len) {
 * # Throws
 *
 * - If unblinding fails.
-*
-* # Safety
-*
-* - The `blinding_factor` is a pointer. If an invalid pointer value is given, this will panic.
 * @param {Uint8Array} blinded_signature
-* @param {number} blinding_factor
+* @param {Uint8Array} blinding_factor_buf
 * @returns {Uint8Array}
 */
-module.exports.unblind = function(blinded_signature, blinding_factor) {
+module.exports.unblind = function(blinded_signature, blinding_factor_buf) {
     var ptr0 = passArray8ToWasm0(blinded_signature, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.unblind(8, ptr0, len0, blinding_factor);
+    var ptr1 = passArray8ToWasm0(blinding_factor_buf, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.unblind(8, ptr0, len0, ptr1, len1);
     var r0 = getInt32Memory0()[8 / 4 + 0];
     var r1 = getInt32Memory0()[8 / 4 + 1];
-    var v1 = getArrayU8FromWasm0(r0, r1).slice();
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
     wasm.__wbindgen_free(r0, r1 * 1);
-    return v1;
+    return v2;
 };
 
 /**
@@ -131,20 +129,18 @@ module.exports.unblind = function(blinded_signature, blinding_factor) {
 * # Throws
 *
 * - If verification fails
-*
-* # Safety
-*
-* - The `public_key` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} public_key
+* @param {Uint8Array} public_key_buf
 * @param {Uint8Array} message
 * @param {Uint8Array} signature
 */
-module.exports.verify = function(public_key, message, signature) {
-    var ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+module.exports.verify = function(public_key_buf, message, signature) {
+    var ptr0 = passArray8ToWasm0(public_key_buf, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    var ptr1 = passArray8ToWasm0(signature, wasm.__wbindgen_malloc);
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
     var len1 = WASM_VECTOR_LEN;
-    wasm.verify(public_key, ptr0, len0, ptr1, len1);
+    var ptr2 = passArray8ToWasm0(signature, wasm.__wbindgen_malloc);
+    var len2 = WASM_VECTOR_LEN;
+    wasm.verify(ptr0, len0, ptr1, len1, ptr2, len2);
 };
 
 /**
@@ -153,23 +149,21 @@ module.exports.verify = function(public_key, message, signature) {
 * # Throws
 *
 * - If signing fails
-*
-* # Safety
-*
-* - The `private_key` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} private_key
+* @param {Uint8Array} private_key_buf
 * @param {Uint8Array} message
 * @returns {Uint8Array}
 */
-module.exports.sign = function(private_key, message) {
-    var ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+module.exports.sign = function(private_key_buf, message) {
+    var ptr0 = passArray8ToWasm0(private_key_buf, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.sign(8, private_key, ptr0, len0);
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.sign(8, ptr0, len0, ptr1, len1);
     var r0 = getInt32Memory0()[8 / 4 + 0];
     var r1 = getInt32Memory0()[8 / 4 + 1];
-    var v1 = getArrayU8FromWasm0(r0, r1).slice();
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
     wasm.__wbindgen_free(r0, r1 * 1);
-    return v1;
+    return v2;
 };
 
 /**
@@ -182,22 +176,21 @@ module.exports.sign = function(private_key, message) {
 *
 * NOTE: This method must NOT be called with a PrivateKey which is not generated via a
 * secret sharing scheme.
-*
-* # Safety
-* - The `private_key` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} share
+* @param {Uint8Array} share_buf
 * @param {Uint8Array} message
 * @returns {Uint8Array}
 */
-module.exports.partialSign = function(share, message) {
-    var ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+module.exports.partialSign = function(share_buf, message) {
+    var ptr0 = passArray8ToWasm0(share_buf, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    wasm.partialSign(8, share, ptr0, len0);
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.partialSign(8, ptr0, len0, ptr1, len1);
     var r0 = getInt32Memory0()[8 / 4 + 0];
     var r1 = getInt32Memory0()[8 / 4 + 1];
-    var v1 = getArrayU8FromWasm0(r0, r1).slice();
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
     wasm.__wbindgen_free(r0, r1 * 1);
-    return v1;
+    return v2;
 };
 
 /**
@@ -207,19 +200,18 @@ module.exports.partialSign = function(share, message) {
 * # Throws
 *
 * - If verification fails
-*
-* # Safety
-* - The `polynomial` is a pointer. If an invalid pointer value is given, this will panic.
-* @param {number} polynomial
+* @param {Uint8Array} polynomial_buf
 * @param {Uint8Array} blinded_message
 * @param {Uint8Array} sig
 */
-module.exports.partialVerify = function(polynomial, blinded_message, sig) {
-    var ptr0 = passArray8ToWasm0(blinded_message, wasm.__wbindgen_malloc);
+module.exports.partialVerify = function(polynomial_buf, blinded_message, sig) {
+    var ptr0 = passArray8ToWasm0(polynomial_buf, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
-    var ptr1 = passArray8ToWasm0(sig, wasm.__wbindgen_malloc);
+    var ptr1 = passArray8ToWasm0(blinded_message, wasm.__wbindgen_malloc);
     var len1 = WASM_VECTOR_LEN;
-    wasm.partialVerify(polynomial, ptr0, len0, ptr1, len1);
+    var ptr2 = passArray8ToWasm0(sig, wasm.__wbindgen_malloc);
+    var len2 = WASM_VECTOR_LEN;
+    wasm.partialVerify(ptr0, len0, ptr1, len1, ptr2, len2);
 };
 
 /**
@@ -313,7 +305,7 @@ module.exports.partialVerify = function(polynomial, blinded_message, sig) {
             toJSON() {
                 return {
                     message: this.message,
-                    blindingFactorPtr: this.blindingFactorPtr,
+                    blindingFactor: this.blindingFactor,
                 };
             }
 
@@ -343,11 +335,15 @@ module.exports.partialVerify = function(polynomial, blinded_message, sig) {
                 return v0;
             }
             /**
-            * @returns {number}
+            * @returns {Uint8Array}
             */
-            get blindingFactorPtr() {
-                var ret = wasm.blindedmessage_blindingFactorPtr(this.ptr);
-                return ret;
+            get blindingFactor() {
+                wasm.blindedmessage_blindingFactor(8, this.ptr);
+                var r0 = getInt32Memory0()[8 / 4 + 0];
+                var r1 = getInt32Memory0()[8 / 4 + 1];
+                var v0 = getArrayU8FromWasm0(r0, r1).slice();
+                wasm.__wbindgen_free(r0, r1 * 1);
+                return v0;
             }
         }
         module.exports.BlindedMessage = BlindedMessage;
@@ -370,18 +366,26 @@ module.exports.partialVerify = function(polynomial, blinded_message, sig) {
                 wasm.__wbg_keypair_free(ptr);
             }
             /**
-            * @returns {number}
+            * @returns {Uint8Array}
             */
-            get privateKeyPtr() {
-                var ret = wasm.blindedmessage_blindingFactorPtr(this.ptr);
-                return ret;
+            get privateKey() {
+                wasm.blindedmessage_blindingFactor(8, this.ptr);
+                var r0 = getInt32Memory0()[8 / 4 + 0];
+                var r1 = getInt32Memory0()[8 / 4 + 1];
+                var v0 = getArrayU8FromWasm0(r0, r1).slice();
+                wasm.__wbindgen_free(r0, r1 * 1);
+                return v0;
             }
             /**
-            * @returns {number}
+            * @returns {Uint8Array}
             */
-            get publicKeyPtr() {
-                var ret = wasm.keypair_publicKeyPtr(this.ptr);
-                return ret;
+            get publicKey() {
+                wasm.keypair_publicKey(8, this.ptr);
+                var r0 = getInt32Memory0()[8 / 4 + 0];
+                var r1 = getInt32Memory0()[8 / 4 + 1];
+                var v0 = getArrayU8FromWasm0(r0, r1).slice();
+                wasm.__wbindgen_free(r0, r1 * 1);
+                return v0;
             }
         }
         module.exports.Keypair = Keypair;
@@ -429,19 +433,16 @@ module.exports.partialVerify = function(polynomial, blinded_message, sig) {
                 wasm.__wbg_set_keys_n(this.ptr, arg0);
             }
             /**
-            * @returns {number}
-            */
-            get sharesPtr() {
-                var ret = wasm.keys_sharesPtr(this.ptr);
-                return ret;
-            }
-            /**
             * @param {number} index
-            * @returns {number}
+            * @returns {Uint8Array}
             */
-            getSharePtr(index) {
-                var ret = wasm.keys_getSharePtr(this.ptr, index);
-                return ret;
+            getShare(index) {
+                wasm.keys_getShare(8, this.ptr, index);
+                var r0 = getInt32Memory0()[8 / 4 + 0];
+                var r1 = getInt32Memory0()[8 / 4 + 1];
+                var v0 = getArrayU8FromWasm0(r0, r1).slice();
+                wasm.__wbindgen_free(r0, r1 * 1);
+                return v0;
             }
             /**
             * @returns {number}
@@ -451,18 +452,26 @@ module.exports.partialVerify = function(polynomial, blinded_message, sig) {
                 return ret >>> 0;
             }
             /**
-            * @returns {number}
+            * @returns {Uint8Array}
             */
-            get polynomialPtr() {
-                var ret = wasm.keys_polynomialPtr(this.ptr);
-                return ret;
+            get polynomial() {
+                wasm.keys_polynomial(8, this.ptr);
+                var r0 = getInt32Memory0()[8 / 4 + 0];
+                var r1 = getInt32Memory0()[8 / 4 + 1];
+                var v0 = getArrayU8FromWasm0(r0, r1).slice();
+                wasm.__wbindgen_free(r0, r1 * 1);
+                return v0;
             }
             /**
-            * @returns {number}
+            * @returns {Uint8Array}
             */
-            get thresholdPublicKeyPtr() {
-                var ret = wasm.blindedmessage_blindingFactorPtr(this.ptr);
-                return ret;
+            get thresholdPublicKey() {
+                wasm.keys_thresholdPublicKey(8, this.ptr);
+                var r0 = getInt32Memory0()[8 / 4 + 0];
+                var r1 = getInt32Memory0()[8 / 4 + 1];
+                var v0 = getArrayU8FromWasm0(r0, r1).slice();
+                wasm.__wbindgen_free(r0, r1 * 1);
+                return v0;
             }
         }
         module.exports.Keys = Keys;
