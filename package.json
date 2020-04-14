@@ -1,0 +1,16 @@
+{
+  "name": "blind-threshold-bls",
+  "collaborators": [
+    "nikkolasg",
+    "Georgios Konstantopoulos"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "src/blind_threshold_bls_bg.wasm",
+    "src/blind_threshold_bls.js",
+    "src/blind_threshold_bls_bg.js",
+    "src/blind_threshold_bls.d.ts"
+  ],
+  "main": "src/blind_threshold_bls.js",
+  "types": "src/blind_threshold_bls.d.ts"
+}
