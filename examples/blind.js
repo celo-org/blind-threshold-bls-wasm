@@ -19,7 +19,10 @@ const private_key = keypair.privateKey
 const public_key = keypair.publicKey
 
 // Sign the user's blinded message with the service's private key
-const blind_sig = threshold.sign(private_key, blind_msg)
+const blind_sig = threshold.signBlindedMessage(private_key, blind_msg)
+
+threshold.verifyBlindSignature(public_key, blind_msg, blind_sig)
+console.log("Verified blind signature")
 
 // User unblinds the signature with this scalar
 const unblinded_sig = threshold.unblind(blind_sig, blinded_msg.blindingFactor)

@@ -22,16 +22,19 @@ const polynomial = keys.polynomial
 // each of these shares proceed to sign teh blinded sig
 let sigs = []
 for (let i = 0 ; i < keys.numShares(); i++ ) {
-    const sig = threshold.partialSign(keys.getShare(i), blindedMessage)
+    const sig = threshold.partialSignBlindedMessage(keys.getShare(i), blindedMessage)
     sigs.push(sig)
 }
 
 // The combiner will verify all the individual partial signatures
 for (const sig of sigs) {
-    threshold.partialVerify(polynomial, blindedMessage, sig)
+    threshold.partialVerifyBlindSignature(polynomial, blindedMessage, sig)
 }
 
 const blindSig = threshold.combine(t, flattenSigsArray(sigs))
+
+threshold.verifyBlindSignature(keys.thresholdPublicKey, blindedMessage, blindSig)
+console.log("Verified blind signature")
 
 // User unblinds the combined threshold signature with his scalar
 const sig = threshold.unblind(blindSig, blinded.blindingFactor)

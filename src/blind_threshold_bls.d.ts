@@ -1,90 +1,30 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
-* Given a message and a seed, it will blind it and return the blinded message
-*
-* * message: A cleartext message which you want to blind
-* * seed: A 32 byte seed for randomness. You can get one securely via `crypto.randomBytes(32)`
-*
-* Returns a `BlindedMessage`. The `BlindedMessage.blinding_factor` should be saved for unblinding any
-* signatures on `BlindedMessage.message`
+* Generates a single private key from the provided seed.
 *
 * # Safety
-* - If the same seed is used twice, the blinded result WILL be the same
-* @param {Uint8Array} message 
+*
+* The seed MUST be at least 32 bytes long
 * @param {Uint8Array} seed 
-* @returns {BlindedMessage} 
+* @returns {Keypair} 
 */
-export function blind(message: Uint8Array, seed: Uint8Array): BlindedMessage;
+export function keygen(seed: Uint8Array): Keypair;
 /**
-* Given a blinded message and a blinding_factor used for blinding, it returns the message
-* unblinded
+* Generates a t-of-n polynomial and private key shares
 *
-* * blinded_message: A message which has been blinded or a blind signature
-* * blinding_factor: The blinding_factor used to blind the message
+* # Safety
 *
-* # Throws
+* WARNING: This is a helper function for local testing of the library. Do not use
+* in production, unless you trust the person that generated the keys.
 *
-* - If unblinding fails.
-* @param {Uint8Array} blinded_signature 
-* @param {Uint8Array} blinding_factor_buf 
-* @returns {Uint8Array} 
+* The seed MUST be at least 32 bytes long
+* @param {number} n 
+* @param {number} t 
+* @param {Uint8Array} seed 
+* @returns {Keys} 
 */
-export function unblind(blinded_signature: Uint8Array, blinding_factor_buf: Uint8Array): Uint8Array;
-/**
-* Verifies the signature after it has been unblinded. Users will call this on the
-* threshold signature against the full public key
-*
-* * public_key: The public key used to sign the message
-* * message: The message which was signed
-* * signature: The signature which was produced on the message
-*
-* # Throws
-*
-* - If verification fails
-* @param {Uint8Array} public_key_buf 
-* @param {Uint8Array} message 
-* @param {Uint8Array} signature 
-*/
-export function verify(public_key_buf: Uint8Array, message: Uint8Array, signature: Uint8Array): void;
-/**
-* Signs the message with the provided private key and returns the signature
-*
-* # Throws
-*
-* - If signing fails
-* @param {Uint8Array} private_key_buf 
-* @param {Uint8Array} message 
-* @returns {Uint8Array} 
-*/
-export function sign(private_key_buf: Uint8Array, message: Uint8Array): Uint8Array;
-/**
-* Signs the message with the provided **share** of the private key and returns the **partial**
-* signature.
-*
-* # Throws
-*
-* - If signing fails
-*
-* NOTE: This method must NOT be called with a PrivateKey which is not generated via a
-* secret sharing scheme.
-* @param {Uint8Array} share_buf 
-* @param {Uint8Array} message 
-* @returns {Uint8Array} 
-*/
-export function partialSign(share_buf: Uint8Array, message: Uint8Array): Uint8Array;
-/**
-* Verifies a partial signature against the public key corresponding to the secret shared
-* polynomial.
-*
-* # Throws
-*
-* - If verification fails
-* @param {Uint8Array} polynomial_buf 
-* @param {Uint8Array} blinded_message 
-* @param {Uint8Array} sig 
-*/
-export function partialVerify(polynomial_buf: Uint8Array, blinded_message: Uint8Array, sig: Uint8Array): void;
+export function thresholdKeygen(n: number, t: number, seed: Uint8Array): Keys;
 /**
 * Combines a flattened vector of partial signatures to a single threshold signature
 *
@@ -115,30 +55,144 @@ export function partialVerify(polynomial_buf: Uint8Array, blinded_message: Uint8
 */
 export function combine(threshold: number, signatures: Uint8Array): Uint8Array;
 /**
-* Generates a t-of-n polynomial and private key shares
+* Verifies a partial *blind* signature against the public key corresponding to the secret shared
+* polynomial.
 *
-* # Safety
+* # Throws
 *
-* WARNING: This is a helper function for local testing of the library. Do not use
-* in production, unless you trust the person that generated the keys.
-*
-* The seed MUST be at least 32 bytes long
-* @param {number} n 
-* @param {number} t 
-* @param {Uint8Array} seed 
-* @returns {Keys} 
+* - If verification fails
+* @param {Uint8Array} polynomial_buf 
+* @param {Uint8Array} blinded_message 
+* @param {Uint8Array} sig 
 */
-export function thresholdKeygen(n: number, t: number, seed: Uint8Array): Keys;
+export function partialVerifyBlindSignature(polynomial_buf: Uint8Array, blinded_message: Uint8Array, sig: Uint8Array): void;
 /**
-* Generates a single private key from the provided seed.
+* Verifies a partial signature against the public key corresponding to the secret shared
+* polynomial.
+*
+* # Throws
+*
+* - If verification fails
+* @param {Uint8Array} polynomial_buf 
+* @param {Uint8Array} blinded_message 
+* @param {Uint8Array} sig 
+*/
+export function partialVerify(polynomial_buf: Uint8Array, blinded_message: Uint8Array, sig: Uint8Array): void;
+/**
+* Signs the message with the provided **share** of the private key and returns the **partial**
+* signature.
+*
+* # Throws
+*
+* - If signing fails
+*
+* NOTE: This method must NOT be called with a PrivateKey which is not generated via a
+* secret sharing scheme.
+* @param {Uint8Array} share_buf 
+* @param {Uint8Array} message 
+* @returns {Uint8Array} 
+*/
+export function partialSignBlindedMessage(share_buf: Uint8Array, message: Uint8Array): Uint8Array;
+/**
+* Signs the message with the provided **share** of the private key and returns the **partial**
+* signature.
+*
+* # Throws
+*
+* - If signing fails
+*
+* NOTE: This method must NOT be called with a PrivateKey which is not generated via a
+* secret sharing scheme.
+* @param {Uint8Array} share_buf 
+* @param {Uint8Array} message 
+* @returns {Uint8Array} 
+*/
+export function partialSign(share_buf: Uint8Array, message: Uint8Array): Uint8Array;
+/**
+* Signs the message with the provided private key without hashing and returns the signature
+*
+* # Throws
+*
+* - If signing fails
+* @param {Uint8Array} private_key_buf 
+* @param {Uint8Array} message 
+* @returns {Uint8Array} 
+*/
+export function signBlindedMessage(private_key_buf: Uint8Array, message: Uint8Array): Uint8Array;
+/**
+* Signs the message with the provided private key and returns the signature
+*
+* # Throws
+*
+* - If signing fails
+* @param {Uint8Array} private_key_buf 
+* @param {Uint8Array} message 
+* @returns {Uint8Array} 
+*/
+export function sign(private_key_buf: Uint8Array, message: Uint8Array): Uint8Array;
+/**
+* Verifies the signature after it has been unblinded without hashing. Users will call this on the
+* threshold signature against the full public key
+*
+* * public_key: The public key used to sign the message
+* * message: The message which was signed
+* * signature: The signature which was produced on the message
+*
+* # Throws
+*
+* - If verification fails
+* @param {Uint8Array} public_key_buf 
+* @param {Uint8Array} message 
+* @param {Uint8Array} signature 
+*/
+export function verifyBlindSignature(public_key_buf: Uint8Array, message: Uint8Array, signature: Uint8Array): void;
+/**
+* Verifies the signature after it has been unblinded. Users will call this on the
+* threshold signature against the full public key
+*
+* * public_key: The public key used to sign the message
+* * message: The message which was signed
+* * signature: The signature which was produced on the message
+*
+* # Throws
+*
+* - If verification fails
+* @param {Uint8Array} public_key_buf 
+* @param {Uint8Array} message 
+* @param {Uint8Array} signature 
+*/
+export function verify(public_key_buf: Uint8Array, message: Uint8Array, signature: Uint8Array): void;
+/**
+* Given a blinded message and a blinding_factor used for blinding, it returns the message
+* unblinded
+*
+* * blinded_message: A message which has been blinded or a blind signature
+* * blinding_factor: The blinding_factor used to blind the message
+*
+* # Throws
+*
+* - If unblinding fails.
+* @param {Uint8Array} blinded_signature 
+* @param {Uint8Array} blinding_factor_buf 
+* @returns {Uint8Array} 
+*/
+export function unblind(blinded_signature: Uint8Array, blinding_factor_buf: Uint8Array): Uint8Array;
+/**
+* Given a message and a seed, it will blind it and return the blinded message
+*
+* * message: A cleartext message which you want to blind
+* * seed: A 32 byte seed for randomness. You can get one securely via `crypto.randomBytes(32)`
+*
+* Returns a `BlindedMessage`. The `BlindedMessage.blinding_factor` should be saved for unblinding any
+* signatures on `BlindedMessage.message`
 *
 * # Safety
-*
-* The seed MUST be at least 32 bytes long
+* - If the same seed is used twice, the blinded result WILL be the same
+* @param {Uint8Array} message 
 * @param {Uint8Array} seed 
-* @returns {Keypair} 
+* @returns {BlindedMessage} 
 */
-export function keygen(seed: Uint8Array): Keypair;
+export function blind(message: Uint8Array, seed: Uint8Array): BlindedMessage;
 export class BlindedMessage {
   free(): void;
   readonly blindingFactor: Uint8Array;
