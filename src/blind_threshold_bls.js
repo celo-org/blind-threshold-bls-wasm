@@ -1,7 +1,6 @@
 let imports = {};
 imports['__wbindgen_placeholder__'] = module.exports;
 let wasm;
-const { TextDecoder, inspect } = require(String.raw`util`);
 
 let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
 
@@ -408,10 +407,6 @@ module.exports.thresholdKeygen = function(n, t, seed) {
 
             toString() {
                 return JSON.stringify(this);
-            }
-
-            [inspect.custom]() {
-                return Object.assign(Object.create({constructor: this.constructor}), this.toJSON());
             }
 
             free() {

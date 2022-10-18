@@ -4,7 +4,7 @@
     "nikkolasg",
     "Georgios Konstantopoulos"
   ],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "files": [
     "src/blind_threshold_bls_bg.wasm",
     "src/blind_threshold_bls.js",
