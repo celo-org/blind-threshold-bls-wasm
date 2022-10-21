@@ -219,3 +219,5 @@ export class Keys {
   t: number;
   readonly thresholdPublicKey: Uint8Array;
 }
+
+export async function init(path:string): void

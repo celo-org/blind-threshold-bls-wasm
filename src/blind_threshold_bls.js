@@ -581,11 +581,10 @@ module.exports.thresholdKeygen = function(n, t, seed) {
             throw takeObject(arg0);
         };
 
-        const path = require('path').join(__dirname, 'blind_threshold_bls_bg.wasm');
-        const bytes = require('fs').readFileSync(path);
+        module.exports.init = async function(path) {
+            const wasmInstance = (await WebAssembly.instantiateStreaming(fetch(path), imports)).instance
+            wasm = wasmInstance.exports;
+        }
 
-        const wasmModule = new WebAssembly.Module(bytes);
-        const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-        wasm = wasmInstance.exports;
         module.exports.__wasm = wasm;
 
