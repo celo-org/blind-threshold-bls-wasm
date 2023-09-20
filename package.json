@@ -1,16 +1,32 @@
 {
-  "name": "blind-threshold-bls",
+  "name": "@celo/blind-threshold-bls",
+  "version": "1.0.0-beta",
+  "private": false,
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/celo-org/blind-threshold-bls-wasm"
+  },
+  "keywords": [
+    "bls",
+    "blind",
+    "wasm",
+    "celo"
+  ],
   "collaborators": [
     "nikkolasg",
     "Georgios Konstantopoulos"
   ],
-  "version": "0.1.0",
   "files": [
+    "README.md",
     "src/blind_threshold_bls_bg.wasm",
     "src/blind_threshold_bls.js",
     "src/blind_threshold_bls_bg.js",
     "src/blind_threshold_bls.d.ts"
   ],
   "main": "src/blind_threshold_bls.js",
-  "types": "src/blind_threshold_bls.d.ts"
+  "types": "src/blind_threshold_bls.d.ts",
+  "publishConfig": {
+    "access": "public"
+  }
 }

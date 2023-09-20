@@ -8,7 +8,7 @@ the underlying [Rust library](https://github.com/celo-org/celo-bls-threshold-rs)
 You can find details on the functionalities provided per function by inspecting
 the [Typescript types file](./src/blind_threshold_bls.d.ts)
 
-Install by running: `npm install blind-threshold-bls`
+Install by running: `npm install @celo/blind-threshold-bls`
 
 ## Examples
 
@@ -28,7 +28,7 @@ $ node examples/tblind.js
 // Simple Example of blinding, signing, unblinding and verifying.
 
 // Import the library
-const threshold = require("../src/blind_threshold_bls")
+const threshold = require("@celo/blind_threshold_bls")
 const crypto = require('crypto')
 
 // Get a message and a secret for the user
@@ -64,7 +64,7 @@ console.log("Verification successful")
 // Example of how threshold signing is expected to be consumed from the JS side
 
 // Import the library
-const threshold = require("../src/blind_threshold_bls")
+const threshold = require("@celo/blind_threshold_bls")
 const crypto = require('crypto')
 // Helper
 function flattenSigsArray(sigs) {
