@@ -28,7 +28,7 @@ $ node examples/tblind.js
 // Simple Example of blinding, signing, unblinding and verifying.
 
 // Import the library
-const threshold = require("@celo/blind_threshold_bls")
+const threshold = require("@celo/blind-threshold-bls")
 const crypto = require('crypto')
 
 // Get a message and a secret for the user
@@ -64,7 +64,7 @@ console.log("Verification successful")
 // Example of how threshold signing is expected to be consumed from the JS side
 
 // Import the library
-const threshold = require("@celo/blind_threshold_bls")
+const threshold = require("@celo/blind-threshold-bls")
 const crypto = require('crypto')
 // Helper
 function flattenSigsArray(sigs) {
@@ -88,7 +88,7 @@ const keys = threshold.thresholdKeygen(n, t, crypto.randomBytes(32))
 const shares = keys.shares
 const polynomial = keys.polynomial
 
-// each of these shares proceed to sign teh blinded sig
+// each of these shares proceed to sign the blinded sig
 let sigs = []
 for (let i = 0 ; i < keys.numShares(); i++ ) {
     const sig = threshold.partialSign(keys.getShare(i), blindedMessage)
@@ -105,7 +105,7 @@ const blindSig = threshold.combine(t, flattenSigsArray(sigs))
 // User unblinds the combined threshold signature with his scalar
 const sig = threshold.unblind(blindSig, blinded.blindingFactor)
 
-// User verifies the unblinded signautre on his unblinded message
+// User verifies the unblinded signature on his unblinded message
 threshold.verify(keys.thresholdPublicKey, msg, sig)
 console.log("Verification successful")
 ```
