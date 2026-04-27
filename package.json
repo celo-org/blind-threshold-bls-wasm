@@ -15,7 +15,8 @@
   ],
   "collaborators": [
     "nikkolasg",
-    "Georgios Konstantopoulos"
+    "Georgios Konstantopoulos",
+    "Paul Lange"
   ],
   "files": [
     "README.md",
@@ -31,6 +32,9 @@
   },
   "devDependencies": {
     "jest": "^30.0.0"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "publishConfig": {
     "access": "public"
