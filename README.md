@@ -1,5 +1,11 @@
 # Blind Threshold BLS Signatures
 
+> **This repository has moved.** The npm packaging, examples and test suite of
+> `@celo/blind-threshold-bls` now live in
+> [`celo-org/celo-threshold-bls-rs`](https://github.com/celo-org/celo-threshold-bls-rs/tree/main/bindings/js)
+> under `bindings/js/`, where the wasm binary is built from the Rust sources
+> instead of being checked in. This repository is no longer updated.
+
 
 This library provides wasm bindings for producing and verifying blind threshold signatures
 on BLS12-377. This is done by utilizing [`wasm-pack`](https://github.com/rustwasm/wasm-pack) and
