@@ -1,11 +1,6 @@
 let imports = {};
 imports['__wbindgen_placeholder__'] = module.exports;
 let wasm;
-const { TextDecoder, inspect } = require(String.raw`util`);
-
-let cachedTextDecoder = new TextDecoder('utf-8', { ignoreBOM: true, fatal: true });
-
-cachedTextDecoder.decode();
 
 let cachegetUint8Memory0 = null;
 function getUint8Memory0() {
@@ -16,7 +11,7 @@ function getUint8Memory0() {
 }
 
 function getStringFromWasm0(ptr, len) {
-    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+    return new TextDecoder().decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
 
 const heap = new Array(32).fill(undefined);
@@ -77,7 +72,7 @@ function passArray8ToWasm0(arg, malloc) {
 * @param {Uint8Array} seed
 * @returns {Keypair}
 */
-module.exports.keygen = function(seed) {
+module.exports.keygen = function (seed) {
     var ptr0 = passArray8ToWasm0(seed, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     var ret = wasm.keygen(ptr0, len0);
@@ -98,7 +93,7 @@ module.exports.keygen = function(seed) {
 * @param {Uint8Array} seed
 * @returns {Keys}
 */
-module.exports.thresholdKeygen = function(n, t, seed) {
+module.exports.thresholdKeygen = function (n, t, seed) {
     var ptr0 = passArray8ToWasm0(seed, wasm.__wbindgen_malloc);
     var len0 = WASM_VECTOR_LEN;
     var ret = wasm.thresholdKeygen(n, t, ptr0, len0);
@@ -133,464 +128,464 @@ module.exports.thresholdKeygen = function(n, t, seed) {
         * @param {Uint8Array} signatures
         * @returns {Uint8Array}
         */
-        module.exports.combine = function(threshold, signatures) {
-            var ptr0 = passArray8ToWasm0(signatures, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            wasm.combine(8, threshold, ptr0, len0);
-            var r0 = getInt32Memory0()[8 / 4 + 0];
-            var r1 = getInt32Memory0()[8 / 4 + 1];
-            var v1 = getArrayU8FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1);
-            return v1;
+module.exports.combine = function (threshold, signatures) {
+    var ptr0 = passArray8ToWasm0(signatures, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    wasm.combine(8, threshold, ptr0, len0);
+    var r0 = getInt32Memory0()[8 / 4 + 0];
+    var r1 = getInt32Memory0()[8 / 4 + 1];
+    var v1 = getArrayU8FromWasm0(r0, r1).slice();
+    wasm.__wbindgen_free(r0, r1 * 1);
+    return v1;
+};
+
+/**
+* Verifies a partial *blind* signature against the public key corresponding to the secret shared
+* polynomial.
+*
+* # Throws
+*
+* - If verification fails
+* @param {Uint8Array} polynomial_buf
+* @param {Uint8Array} blinded_message
+* @param {Uint8Array} sig
+*/
+module.exports.partialVerifyBlindSignature = function (polynomial_buf, blinded_message, sig) {
+    var ptr0 = passArray8ToWasm0(polynomial_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(blinded_message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    var ptr2 = passArray8ToWasm0(sig, wasm.__wbindgen_malloc);
+    var len2 = WASM_VECTOR_LEN;
+    wasm.partialVerifyBlindSignature(ptr0, len0, ptr1, len1, ptr2, len2);
+};
+
+/**
+* Verifies a partial signature against the public key corresponding to the secret shared
+* polynomial.
+*
+* # Throws
+*
+* - If verification fails
+* @param {Uint8Array} polynomial_buf
+* @param {Uint8Array} blinded_message
+* @param {Uint8Array} sig
+*/
+module.exports.partialVerify = function (polynomial_buf, blinded_message, sig) {
+    var ptr0 = passArray8ToWasm0(polynomial_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(blinded_message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    var ptr2 = passArray8ToWasm0(sig, wasm.__wbindgen_malloc);
+    var len2 = WASM_VECTOR_LEN;
+    wasm.partialVerify(ptr0, len0, ptr1, len1, ptr2, len2);
+};
+
+/**
+* Signs the message with the provided **share** of the private key and returns the **partial**
+* signature.
+*
+* # Throws
+*
+* - If signing fails
+*
+* NOTE: This method must NOT be called with a PrivateKey which is not generated via a
+* secret sharing scheme.
+* @param {Uint8Array} share_buf
+* @param {Uint8Array} message
+* @returns {Uint8Array}
+*/
+module.exports.partialSignBlindedMessage = function (share_buf, message) {
+    var ptr0 = passArray8ToWasm0(share_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.partialSignBlindedMessage(8, ptr0, len0, ptr1, len1);
+    var r0 = getInt32Memory0()[8 / 4 + 0];
+    var r1 = getInt32Memory0()[8 / 4 + 1];
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
+    wasm.__wbindgen_free(r0, r1 * 1);
+    return v2;
+};
+
+/**
+* Signs the message with the provided **share** of the private key and returns the **partial**
+* signature.
+*
+* # Throws
+*
+* - If signing fails
+*
+* NOTE: This method must NOT be called with a PrivateKey which is not generated via a
+* secret sharing scheme.
+* @param {Uint8Array} share_buf
+* @param {Uint8Array} message
+* @returns {Uint8Array}
+*/
+module.exports.partialSign = function (share_buf, message) {
+    var ptr0 = passArray8ToWasm0(share_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.partialSign(8, ptr0, len0, ptr1, len1);
+    var r0 = getInt32Memory0()[8 / 4 + 0];
+    var r1 = getInt32Memory0()[8 / 4 + 1];
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
+    wasm.__wbindgen_free(r0, r1 * 1);
+    return v2;
+};
+
+/**
+* Signs the message with the provided private key without hashing and returns the signature
+*
+* # Throws
+*
+* - If signing fails
+* @param {Uint8Array} private_key_buf
+* @param {Uint8Array} message
+* @returns {Uint8Array}
+*/
+module.exports.signBlindedMessage = function (private_key_buf, message) {
+    var ptr0 = passArray8ToWasm0(private_key_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.signBlindedMessage(8, ptr0, len0, ptr1, len1);
+    var r0 = getInt32Memory0()[8 / 4 + 0];
+    var r1 = getInt32Memory0()[8 / 4 + 1];
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
+    wasm.__wbindgen_free(r0, r1 * 1);
+    return v2;
+};
+
+/**
+* Signs the message with the provided private key and returns the signature
+*
+* # Throws
+*
+* - If signing fails
+* @param {Uint8Array} private_key_buf
+* @param {Uint8Array} message
+* @returns {Uint8Array}
+*/
+module.exports.sign = function (private_key_buf, message) {
+    var ptr0 = passArray8ToWasm0(private_key_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.sign(8, ptr0, len0, ptr1, len1);
+    var r0 = getInt32Memory0()[8 / 4 + 0];
+    var r1 = getInt32Memory0()[8 / 4 + 1];
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
+    wasm.__wbindgen_free(r0, r1 * 1);
+    return v2;
+};
+
+/**
+* Verifies the signature after it has been unblinded without hashing. Users will call this on the
+* threshold signature against the full public key
+*
+* * public_key: The public key used to sign the message
+* * message: The message which was signed
+* * signature: The signature which was produced on the message
+*
+* # Throws
+*
+* - If verification fails
+* @param {Uint8Array} public_key_buf
+* @param {Uint8Array} message
+* @param {Uint8Array} signature
+*/
+module.exports.verifyBlindSignature = function (public_key_buf, message, signature) {
+    var ptr0 = passArray8ToWasm0(public_key_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    var ptr2 = passArray8ToWasm0(signature, wasm.__wbindgen_malloc);
+    var len2 = WASM_VECTOR_LEN;
+    wasm.verifyBlindSignature(ptr0, len0, ptr1, len1, ptr2, len2);
+};
+
+/**
+* Verifies the signature after it has been unblinded. Users will call this on the
+* threshold signature against the full public key
+*
+* * public_key: The public key used to sign the message
+* * message: The message which was signed
+* * signature: The signature which was produced on the message
+*
+* # Throws
+*
+* - If verification fails
+* @param {Uint8Array} public_key_buf
+* @param {Uint8Array} message
+* @param {Uint8Array} signature
+*/
+module.exports.verify = function (public_key_buf, message, signature) {
+    var ptr0 = passArray8ToWasm0(public_key_buf, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    var ptr2 = passArray8ToWasm0(signature, wasm.__wbindgen_malloc);
+    var len2 = WASM_VECTOR_LEN;
+    wasm.verify(ptr0, len0, ptr1, len1, ptr2, len2);
+};
+
+/**
+* Given a blinded message and a blinding_factor used for blinding, it returns the message
+* unblinded
+*
+* * blinded_message: A message which has been blinded or a blind signature
+* * blinding_factor: The blinding_factor used to blind the message
+*
+* # Throws
+*
+* - If unblinding fails.
+* @param {Uint8Array} blinded_signature
+* @param {Uint8Array} blinding_factor_buf
+* @returns {Uint8Array}
+*/
+module.exports.unblind = function (blinded_signature, blinding_factor_buf) {
+    var ptr0 = passArray8ToWasm0(blinded_signature, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(blinding_factor_buf, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    wasm.unblind(8, ptr0, len0, ptr1, len1);
+    var r0 = getInt32Memory0()[8 / 4 + 0];
+    var r1 = getInt32Memory0()[8 / 4 + 1];
+    var v2 = getArrayU8FromWasm0(r0, r1).slice();
+    wasm.__wbindgen_free(r0, r1 * 1);
+    return v2;
+};
+
+/**
+* Given a message and a seed, it will blind it and return the blinded message
+*
+* * message: A cleartext message which you want to blind
+* * seed: A 32 byte seed for randomness. You can get one securely via `crypto.randomBytes(32)`
+*
+* Returns a `BlindedMessage`. The `BlindedMessage.blinding_factor` should be saved for unblinding any
+* signatures on `BlindedMessage.message`
+*
+* # Safety
+* - If the same seed is used twice, the blinded result WILL be the same
+* @param {Uint8Array} message
+* @param {Uint8Array} seed
+* @returns {BlindedMessage}
+*/
+module.exports.blind = function (message, seed) {
+    var ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
+    var len0 = WASM_VECTOR_LEN;
+    var ptr1 = passArray8ToWasm0(seed, wasm.__wbindgen_malloc);
+    var len1 = WASM_VECTOR_LEN;
+    var ret = wasm.blind(ptr0, len0, ptr1, len1);
+    return BlindedMessage.__wrap(ret);
+};
+
+/**
+* A blinded message along with the blinding_factor used to produce it
+*/
+class BlindedMessage {
+
+    static __wrap(ptr) {
+        const obj = Object.create(BlindedMessage.prototype);
+        obj.ptr = ptr;
+
+        return obj;
+    }
+
+    toJSON() {
+        return {
+            message: this.message,
+            blindingFactor: this.blindingFactor,
         };
+    }
 
-        /**
-        * Verifies a partial *blind* signature against the public key corresponding to the secret shared
-        * polynomial.
-        *
-        * # Throws
-        *
-        * - If verification fails
-        * @param {Uint8Array} polynomial_buf
-        * @param {Uint8Array} blinded_message
-        * @param {Uint8Array} sig
-        */
-        module.exports.partialVerifyBlindSignature = function(polynomial_buf, blinded_message, sig) {
-            var ptr0 = passArray8ToWasm0(polynomial_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(blinded_message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            var ptr2 = passArray8ToWasm0(sig, wasm.__wbindgen_malloc);
-            var len2 = WASM_VECTOR_LEN;
-            wasm.partialVerifyBlindSignature(ptr0, len0, ptr1, len1, ptr2, len2);
-        };
+    toString() {
+        return JSON.stringify(this);
+    }
 
-        /**
-        * Verifies a partial signature against the public key corresponding to the secret shared
-        * polynomial.
-        *
-        * # Throws
-        *
-        * - If verification fails
-        * @param {Uint8Array} polynomial_buf
-        * @param {Uint8Array} blinded_message
-        * @param {Uint8Array} sig
-        */
-        module.exports.partialVerify = function(polynomial_buf, blinded_message, sig) {
-            var ptr0 = passArray8ToWasm0(polynomial_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(blinded_message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            var ptr2 = passArray8ToWasm0(sig, wasm.__wbindgen_malloc);
-            var len2 = WASM_VECTOR_LEN;
-            wasm.partialVerify(ptr0, len0, ptr1, len1, ptr2, len2);
-        };
+    // [util.inspect.custom]() {
+    //     return Object.assign(Object.create({ constructor: this.constructor }), this.toJSON());
+    // }
 
-        /**
-        * Signs the message with the provided **share** of the private key and returns the **partial**
-        * signature.
-        *
-        * # Throws
-        *
-        * - If signing fails
-        *
-        * NOTE: This method must NOT be called with a PrivateKey which is not generated via a
-        * secret sharing scheme.
-        * @param {Uint8Array} share_buf
-        * @param {Uint8Array} message
-        * @returns {Uint8Array}
-        */
-        module.exports.partialSignBlindedMessage = function(share_buf, message) {
-            var ptr0 = passArray8ToWasm0(share_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            wasm.partialSignBlindedMessage(8, ptr0, len0, ptr1, len1);
-            var r0 = getInt32Memory0()[8 / 4 + 0];
-            var r1 = getInt32Memory0()[8 / 4 + 1];
-            var v2 = getArrayU8FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1);
-            return v2;
-        };
+    free() {
+        const ptr = this.ptr;
+        this.ptr = 0;
 
-        /**
-        * Signs the message with the provided **share** of the private key and returns the **partial**
-        * signature.
-        *
-        * # Throws
-        *
-        * - If signing fails
-        *
-        * NOTE: This method must NOT be called with a PrivateKey which is not generated via a
-        * secret sharing scheme.
-        * @param {Uint8Array} share_buf
-        * @param {Uint8Array} message
-        * @returns {Uint8Array}
-        */
-        module.exports.partialSign = function(share_buf, message) {
-            var ptr0 = passArray8ToWasm0(share_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            wasm.partialSign(8, ptr0, len0, ptr1, len1);
-            var r0 = getInt32Memory0()[8 / 4 + 0];
-            var r1 = getInt32Memory0()[8 / 4 + 1];
-            var v2 = getArrayU8FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1);
-            return v2;
-        };
+        wasm.__wbg_blindedmessage_free(ptr);
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    get message() {
+        wasm.blindedmessage_message(8, this.ptr);
+        var r0 = getInt32Memory0()[8 / 4 + 0];
+        var r1 = getInt32Memory0()[8 / 4 + 1];
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1);
+        return v0;
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    get blindingFactor() {
+        wasm.blindedmessage_blindingFactor(8, this.ptr);
+        var r0 = getInt32Memory0()[8 / 4 + 0];
+        var r1 = getInt32Memory0()[8 / 4 + 1];
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1);
+        return v0;
+    }
+}
+module.exports.BlindedMessage = BlindedMessage;
+/**
+* A BLS12-377 Keypair
+*/
+class Keypair {
 
-        /**
-        * Signs the message with the provided private key without hashing and returns the signature
-        *
-        * # Throws
-        *
-        * - If signing fails
-        * @param {Uint8Array} private_key_buf
-        * @param {Uint8Array} message
-        * @returns {Uint8Array}
-        */
-        module.exports.signBlindedMessage = function(private_key_buf, message) {
-            var ptr0 = passArray8ToWasm0(private_key_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            wasm.signBlindedMessage(8, ptr0, len0, ptr1, len1);
-            var r0 = getInt32Memory0()[8 / 4 + 0];
-            var r1 = getInt32Memory0()[8 / 4 + 1];
-            var v2 = getArrayU8FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1);
-            return v2;
-        };
+    static __wrap(ptr) {
+        const obj = Object.create(Keypair.prototype);
+        obj.ptr = ptr;
 
-        /**
-        * Signs the message with the provided private key and returns the signature
-        *
-        * # Throws
-        *
-        * - If signing fails
-        * @param {Uint8Array} private_key_buf
-        * @param {Uint8Array} message
-        * @returns {Uint8Array}
-        */
-        module.exports.sign = function(private_key_buf, message) {
-            var ptr0 = passArray8ToWasm0(private_key_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            wasm.sign(8, ptr0, len0, ptr1, len1);
-            var r0 = getInt32Memory0()[8 / 4 + 0];
-            var r1 = getInt32Memory0()[8 / 4 + 1];
-            var v2 = getArrayU8FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1);
-            return v2;
-        };
+        return obj;
+    }
 
-        /**
-        * Verifies the signature after it has been unblinded without hashing. Users will call this on the
-        * threshold signature against the full public key
-        *
-        * * public_key: The public key used to sign the message
-        * * message: The message which was signed
-        * * signature: The signature which was produced on the message
-        *
-        * # Throws
-        *
-        * - If verification fails
-        * @param {Uint8Array} public_key_buf
-        * @param {Uint8Array} message
-        * @param {Uint8Array} signature
-        */
-        module.exports.verifyBlindSignature = function(public_key_buf, message, signature) {
-            var ptr0 = passArray8ToWasm0(public_key_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            var ptr2 = passArray8ToWasm0(signature, wasm.__wbindgen_malloc);
-            var len2 = WASM_VECTOR_LEN;
-            wasm.verifyBlindSignature(ptr0, len0, ptr1, len1, ptr2, len2);
-        };
+    free() {
+        const ptr = this.ptr;
+        this.ptr = 0;
 
-        /**
-        * Verifies the signature after it has been unblinded. Users will call this on the
-        * threshold signature against the full public key
-        *
-        * * public_key: The public key used to sign the message
-        * * message: The message which was signed
-        * * signature: The signature which was produced on the message
-        *
-        * # Throws
-        *
-        * - If verification fails
-        * @param {Uint8Array} public_key_buf
-        * @param {Uint8Array} message
-        * @param {Uint8Array} signature
-        */
-        module.exports.verify = function(public_key_buf, message, signature) {
-            var ptr0 = passArray8ToWasm0(public_key_buf, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            var ptr2 = passArray8ToWasm0(signature, wasm.__wbindgen_malloc);
-            var len2 = WASM_VECTOR_LEN;
-            wasm.verify(ptr0, len0, ptr1, len1, ptr2, len2);
-        };
+        wasm.__wbg_keypair_free(ptr);
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    get privateKey() {
+        wasm.keypair_privateKey(8, this.ptr);
+        var r0 = getInt32Memory0()[8 / 4 + 0];
+        var r1 = getInt32Memory0()[8 / 4 + 1];
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1);
+        return v0;
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    get publicKey() {
+        wasm.keypair_publicKey(8, this.ptr);
+        var r0 = getInt32Memory0()[8 / 4 + 0];
+        var r1 = getInt32Memory0()[8 / 4 + 1];
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1);
+        return v0;
+    }
+}
+module.exports.Keypair = Keypair;
+/**
+*/
+class Keys {
 
-        /**
-        * Given a blinded message and a blinding_factor used for blinding, it returns the message
-        * unblinded
-        *
-        * * blinded_message: A message which has been blinded or a blind signature
-        * * blinding_factor: The blinding_factor used to blind the message
-        *
-        * # Throws
-        *
-        * - If unblinding fails.
-        * @param {Uint8Array} blinded_signature
-        * @param {Uint8Array} blinding_factor_buf
-        * @returns {Uint8Array}
-        */
-        module.exports.unblind = function(blinded_signature, blinding_factor_buf) {
-            var ptr0 = passArray8ToWasm0(blinded_signature, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(blinding_factor_buf, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            wasm.unblind(8, ptr0, len0, ptr1, len1);
-            var r0 = getInt32Memory0()[8 / 4 + 0];
-            var r1 = getInt32Memory0()[8 / 4 + 1];
-            var v2 = getArrayU8FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 1);
-            return v2;
-        };
+    static __wrap(ptr) {
+        const obj = Object.create(Keys.prototype);
+        obj.ptr = ptr;
 
-        /**
-        * Given a message and a seed, it will blind it and return the blinded message
-        *
-        * * message: A cleartext message which you want to blind
-        * * seed: A 32 byte seed for randomness. You can get one securely via `crypto.randomBytes(32)`
-        *
-        * Returns a `BlindedMessage`. The `BlindedMessage.blinding_factor` should be saved for unblinding any
-        * signatures on `BlindedMessage.message`
-        *
-        * # Safety
-        * - If the same seed is used twice, the blinded result WILL be the same
-        * @param {Uint8Array} message
-        * @param {Uint8Array} seed
-        * @returns {BlindedMessage}
-        */
-        module.exports.blind = function(message, seed) {
-            var ptr0 = passArray8ToWasm0(message, wasm.__wbindgen_malloc);
-            var len0 = WASM_VECTOR_LEN;
-            var ptr1 = passArray8ToWasm0(seed, wasm.__wbindgen_malloc);
-            var len1 = WASM_VECTOR_LEN;
-            var ret = wasm.blind(ptr0, len0, ptr1, len1);
-            return BlindedMessage.__wrap(ret);
-        };
+        return obj;
+    }
 
-        /**
-        * A blinded message along with the blinding_factor used to produce it
-        */
-        class BlindedMessage {
+    free() {
+        const ptr = this.ptr;
+        this.ptr = 0;
 
-            static __wrap(ptr) {
-                const obj = Object.create(BlindedMessage.prototype);
-                obj.ptr = ptr;
+        wasm.__wbg_keys_free(ptr);
+    }
+    /**
+    * @param {number} index
+    * @returns {Uint8Array}
+    */
+    getShare(index) {
+        wasm.keys_getShare(8, this.ptr, index);
+        var r0 = getInt32Memory0()[8 / 4 + 0];
+        var r1 = getInt32Memory0()[8 / 4 + 1];
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1);
+        return v0;
+    }
+    /**
+    * @returns {number}
+    */
+    numShares() {
+        var ret = wasm.keys_numShares(this.ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    get polynomial() {
+        wasm.keys_polynomial(8, this.ptr);
+        var r0 = getInt32Memory0()[8 / 4 + 0];
+        var r1 = getInt32Memory0()[8 / 4 + 1];
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1);
+        return v0;
+    }
+    /**
+    * @returns {Uint8Array}
+    */
+    get thresholdPublicKey() {
+        wasm.keys_thresholdPublicKey(8, this.ptr);
+        var r0 = getInt32Memory0()[8 / 4 + 0];
+        var r1 = getInt32Memory0()[8 / 4 + 1];
+        var v0 = getArrayU8FromWasm0(r0, r1).slice();
+        wasm.__wbindgen_free(r0, r1 * 1);
+        return v0;
+    }
+    /**
+    * @returns {number}
+    */
+    get t() {
+        var ret = wasm.__wbg_get_keys_t(this.ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set t(arg0) {
+        wasm.__wbg_set_keys_t(this.ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get n() {
+        var ret = wasm.__wbg_get_keys_n(this.ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set n(arg0) {
+        wasm.__wbg_set_keys_n(this.ptr, arg0);
+    }
+}
+module.exports.Keys = Keys;
 
-                return obj;
-            }
+module.exports.__wbindgen_string_new = function (arg0, arg1) {
+    var ret = getStringFromWasm0(arg0, arg1);
+    return addHeapObject(ret);
+};
 
-            toJSON() {
-                return {
-                    message: this.message,
-                    blindingFactor: this.blindingFactor,
-                };
-            }
+module.exports.__wbindgen_throw = function (arg0, arg1) {
+    throw new Error(getStringFromWasm0(arg0, arg1));
+};
 
-            toString() {
-                return JSON.stringify(this);
-            }
+module.exports.__wbindgen_rethrow = function (arg0) {
+    throw takeObject(arg0);
+};
 
-            [inspect.custom]() {
-                return Object.assign(Object.create({constructor: this.constructor}), this.toJSON());
-            }
+const path = require('path').join(__dirname, 'blind_threshold_bls_bg.wasm');
+const bytes = require('fs').readFileSync(path);
 
-            free() {
-                const ptr = this.ptr;
-                this.ptr = 0;
-
-                wasm.__wbg_blindedmessage_free(ptr);
-            }
-            /**
-            * @returns {Uint8Array}
-            */
-            get message() {
-                wasm.blindedmessage_message(8, this.ptr);
-                var r0 = getInt32Memory0()[8 / 4 + 0];
-                var r1 = getInt32Memory0()[8 / 4 + 1];
-                var v0 = getArrayU8FromWasm0(r0, r1).slice();
-                wasm.__wbindgen_free(r0, r1 * 1);
-                return v0;
-            }
-            /**
-            * @returns {Uint8Array}
-            */
-            get blindingFactor() {
-                wasm.blindedmessage_blindingFactor(8, this.ptr);
-                var r0 = getInt32Memory0()[8 / 4 + 0];
-                var r1 = getInt32Memory0()[8 / 4 + 1];
-                var v0 = getArrayU8FromWasm0(r0, r1).slice();
-                wasm.__wbindgen_free(r0, r1 * 1);
-                return v0;
-            }
-        }
-        module.exports.BlindedMessage = BlindedMessage;
-        /**
-        * A BLS12-377 Keypair
-        */
-        class Keypair {
-
-            static __wrap(ptr) {
-                const obj = Object.create(Keypair.prototype);
-                obj.ptr = ptr;
-
-                return obj;
-            }
-
-            free() {
-                const ptr = this.ptr;
-                this.ptr = 0;
-
-                wasm.__wbg_keypair_free(ptr);
-            }
-            /**
-            * @returns {Uint8Array}
-            */
-            get privateKey() {
-                wasm.keypair_privateKey(8, this.ptr);
-                var r0 = getInt32Memory0()[8 / 4 + 0];
-                var r1 = getInt32Memory0()[8 / 4 + 1];
-                var v0 = getArrayU8FromWasm0(r0, r1).slice();
-                wasm.__wbindgen_free(r0, r1 * 1);
-                return v0;
-            }
-            /**
-            * @returns {Uint8Array}
-            */
-            get publicKey() {
-                wasm.keypair_publicKey(8, this.ptr);
-                var r0 = getInt32Memory0()[8 / 4 + 0];
-                var r1 = getInt32Memory0()[8 / 4 + 1];
-                var v0 = getArrayU8FromWasm0(r0, r1).slice();
-                wasm.__wbindgen_free(r0, r1 * 1);
-                return v0;
-            }
-        }
-        module.exports.Keypair = Keypair;
-        /**
-        */
-        class Keys {
-
-            static __wrap(ptr) {
-                const obj = Object.create(Keys.prototype);
-                obj.ptr = ptr;
-
-                return obj;
-            }
-
-            free() {
-                const ptr = this.ptr;
-                this.ptr = 0;
-
-                wasm.__wbg_keys_free(ptr);
-            }
-            /**
-            * @param {number} index
-            * @returns {Uint8Array}
-            */
-            getShare(index) {
-                wasm.keys_getShare(8, this.ptr, index);
-                var r0 = getInt32Memory0()[8 / 4 + 0];
-                var r1 = getInt32Memory0()[8 / 4 + 1];
-                var v0 = getArrayU8FromWasm0(r0, r1).slice();
-                wasm.__wbindgen_free(r0, r1 * 1);
-                return v0;
-            }
-            /**
-            * @returns {number}
-            */
-            numShares() {
-                var ret = wasm.keys_numShares(this.ptr);
-                return ret >>> 0;
-            }
-            /**
-            * @returns {Uint8Array}
-            */
-            get polynomial() {
-                wasm.keys_polynomial(8, this.ptr);
-                var r0 = getInt32Memory0()[8 / 4 + 0];
-                var r1 = getInt32Memory0()[8 / 4 + 1];
-                var v0 = getArrayU8FromWasm0(r0, r1).slice();
-                wasm.__wbindgen_free(r0, r1 * 1);
-                return v0;
-            }
-            /**
-            * @returns {Uint8Array}
-            */
-            get thresholdPublicKey() {
-                wasm.keys_thresholdPublicKey(8, this.ptr);
-                var r0 = getInt32Memory0()[8 / 4 + 0];
-                var r1 = getInt32Memory0()[8 / 4 + 1];
-                var v0 = getArrayU8FromWasm0(r0, r1).slice();
-                wasm.__wbindgen_free(r0, r1 * 1);
-                return v0;
-            }
-            /**
-            * @returns {number}
-            */
-            get t() {
-                var ret = wasm.__wbg_get_keys_t(this.ptr);
-                return ret >>> 0;
-            }
-            /**
-            * @param {number} arg0
-            */
-            set t(arg0) {
-                wasm.__wbg_set_keys_t(this.ptr, arg0);
-            }
-            /**
-            * @returns {number}
-            */
-            get n() {
-                var ret = wasm.__wbg_get_keys_n(this.ptr);
-                return ret >>> 0;
-            }
-            /**
-            * @param {number} arg0
-            */
-            set n(arg0) {
-                wasm.__wbg_set_keys_n(this.ptr, arg0);
-            }
-        }
-        module.exports.Keys = Keys;
-
-        module.exports.__wbindgen_string_new = function(arg0, arg1) {
-            var ret = getStringFromWasm0(arg0, arg1);
-            return addHeapObject(ret);
-        };
-
-        module.exports.__wbindgen_throw = function(arg0, arg1) {
-            throw new Error(getStringFromWasm0(arg0, arg1));
-        };
-
-        module.exports.__wbindgen_rethrow = function(arg0) {
-            throw takeObject(arg0);
-        };
-
-        const path = require('path').join(__dirname, 'blind_threshold_bls_bg.wasm');
-        const bytes = require('fs').readFileSync(path);
-
-        const wasmModule = new WebAssembly.Module(bytes);
-        const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-        wasm = wasmInstance.exports;
-        module.exports.__wasm = wasm;
+const wasmModule = new WebAssembly.Module(bytes);
+const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
+wasm = wasmInstance.exports;
+module.exports.__wasm = wasm;
 
